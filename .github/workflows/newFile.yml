@@ -16,7 +16,7 @@ jobs:
       - name: Execute PowerShell Script
         id: execute-powershell
         run: |
-          $output = ./myscript.ps1
+          $output = ./script.ps1
           echo "Output from PowerShell script: $output"
           echo "::set-output name=output::$output"
 
