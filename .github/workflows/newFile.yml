@@ -1,22 +1,38 @@
-name: Email Notification
+name: Execute PowerShell Script and Send Email
 
 on:
   push:
     branches:
-      - main
+      - main  # Adjust this branch name as needed
 
 jobs:
-  send_email_notification:
+  send-email:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Send email notification
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Execute PowerShell Script
+        id: execute-powershell
+        run: |
+          $output = ./myscript.ps1
+          echo "Output from PowerShell script: $output"
+          echo "::set-output name=output::$output"
+
+      - name: Send Email
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.your-email-provider.com
+          server_address: smtp.gmail.com
           server_port: 587
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: 'Repository Update Notification'
-          body: 'There has been a push to the main branch of the repository.'
-          to: ajitparihar87@gmail.com
-          from: ajitparihar87@gmail.com
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          subject: 'GitHub Actions Notification'
+          to: 'recipient@gmail.com'
+          from: 'sender@gmail.com'
+          body: |
+            This email contains the output of a PowerShell script run on GitHub Actions:
+
+            ```
+            ${{ steps.execute-powershell.outputs.output }}
+            ```
